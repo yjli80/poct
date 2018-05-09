@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+<h1>JWT Test</h1>
+
+<a id="all" href="http://202.38.192.145:8989/api/users">all users</a>
+|
+<a id="one" href="http://202.38.192.145:8989/api/user/1">one</a>
+<hr/>
+<div id="wrap">
+	
+</div>
+
+<script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script>
+$(function(){
+	
+	function withAuth(callback) {
+		$.ajax({
+			url : "http://202.38.192.145:8989/oauth/token",
+			method : 'GET',
+			data: {
+				username: 'admin',
+				password: 'adscret',
+				grant_type: 'password'
+			},
+			beforeSend : function(xhr) {
+				xhr.setRequestHeader('Authorization', "Basic " + btoa('POCT-NFYY-2018' + ":" + 'QCxbvBlaZgVjsOfnTx'));
+			},
+			success: function(data, status, xhr){
+				localStorage.token = data.access_token;
+				callback();
+			},
+			error: function(xhr, status, e) {
+				console.log(xhr);
+			}
+		});
+	}
+	
+	function find(url) {
+		$.ajax({
+			url : url,
+			method : 'GET',
+			beforeSend : function(req) {
+				req.setRequestHeader('Authorization', "Bearer " + localStorage.token);
+			},
+			success: function(data){
+				$("#wrap").html(JSON.stringify(data));
+			},
+			error: function(xhr, status, e) {
+				console.log(xhr);
+			}
+		});
+	}
+	
+	$("a").on("click", function(e){
+		e.preventDefault();
+		
+		if (localStorage.token) {
+			find($(this).attr("href"));
+		} else {
+			withAuth(search);
+		}
+	});
+});
+</script>
+</body>
+</html>

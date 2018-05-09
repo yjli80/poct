@@ -19,7 +19,6 @@ import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
-import org.springframework.web.cors.CorsUtils;
 
 /**
  * Created by nydiarra on 06/05/17.
@@ -56,15 +55,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		
 		http.sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().httpBasic()
 				.realmName(securityRealm).and().csrf().disable();
-		
-		http.requestMatchers().and().authorizeRequests()
-				.requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-					.antMatchers("/resources/**").permitAll()
-						.antMatchers("/api/**").hasAnyRole("USER");
 	}
 
 	@Bean
