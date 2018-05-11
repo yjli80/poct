@@ -15,7 +15,7 @@
   "jti":"22444aa6-f76e-4cdf-b0db-ed2187e12845"
 }`
 
-* access_token: Base64 编码的 token，由 "." 分隔为 HEADER，PAYLOAD，VERIFY SIGNATURE三部分，格式参考 [jwt.io](https://jwt.io/)。
+* access_token: 由 HEADER，PAYLOAD，VERIFY SIGNATURE 三部分 Base64 编码组成的 token，每部分之间用 "." 分隔，格式参考 [jwt.io](https://jwt.io/)。
   第一、第二部分解码之后如下所示。
   第二部分中的 user_name 表示用户名，exp 表示何时超时（从 1970-01-01 00:00:00 开始的秒数）
   
