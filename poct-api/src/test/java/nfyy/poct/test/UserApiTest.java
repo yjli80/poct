@@ -1,6 +1,9 @@
 package nfyy.poct.test;
 
-import org.junit.Assert;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.hamcrest.core.StringContains.containsString;
+
 import org.junit.Test;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.Resource;
@@ -28,8 +31,8 @@ public class UserApiTest extends TestWebConfigration {
 		
 		User user = resp.getBody().getContent();
 		
-		Assert.assertNotNull(user);
-		Assert.assertEquals(user.getUsername(), "admin");
+		assertThat(user, notNullValue());
+		assertThat(user.getUsername(), containsString("admin"));
 		
 	}
 }
