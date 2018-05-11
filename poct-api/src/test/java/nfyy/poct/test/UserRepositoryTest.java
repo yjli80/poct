@@ -26,7 +26,7 @@ import nfyy.poct.domain.User;
 import nfyy.poct.domain.UserRepository;
 import nfyy.poct.rsql.CustomRsqlVisitor;
 
-public class UserRepositoryTest {
+public class UserRepositoryTest extends TestWebConfigration {
 
 	@Autowired
 	private UserRepository repo;
