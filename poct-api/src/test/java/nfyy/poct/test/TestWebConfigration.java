@@ -80,7 +80,7 @@ public class TestWebConfigration {
 	}
 	
 	public String getUrl(String uri) {
-		return host + port + uri;
+		return host + ":" + port + uri;
 	}
 	
 	public String obtainAccessToken() {
