@@ -7,19 +7,26 @@ import static org.hamcrest.core.IsNot.not;
 import java.util.Date;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import cz.jirutka.rsql.parser.RSQLParser;
 import cz.jirutka.rsql.parser.ast.Node;
+import nfyy.poct.Application;
 import nfyy.poct.domain.User;
 import nfyy.poct.domain.UserRepository;
 import nfyy.poct.rsql.CustomRsqlVisitor;
 
-public class UserRepositoryTest extends TestWebConfigration {
+public class UserRepositoryTest {
 
 	@Autowired
 	private UserRepository repo;
