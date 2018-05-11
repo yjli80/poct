@@ -78,7 +78,7 @@
   
   `{ error: "invalid_token", error_description: "Access token expired: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiUE9DVC1BUEktTkZZWS0yMDE4Il0sInVzZXJfbmFtZSI6InRlc3QiLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXSwiZXhwIjoxNTI2MDI0NzA1LCJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwianRpIjoiMjI0NDRhYTYtZjc2ZS00Y2RmLWIwZGItZWQyMTg3ZTEyODQ1IiwiY2xpZW50X2lkIjoiUE9DVC1ORllZLTIwMTgifQ.3cVDIH-EbyF2YgD3bkhHyx-_kyvi3MfBDmlxAlVPzzI" }`
   
-  + Java 取得认证 token 的 [例子源代码](https://github.com/yjli80/poct/blob/master/poct-api/src/test/java/nfyy/poct/test/JWTAuthenticationTest.java)
+  + Java 取得认证 token 的 [例子](https://github.com/yjli80/poct/blob/master/poct-api/src/test/java/nfyy/poct/test/TestWebConfigration.java) 和调用 api 的 [例子](https://github.com/yjli80/poct/blob/master/poct-api/src/test/java/nfyy/poct/test/UserApiTest.java)
   + jQuery 取得认证 token 和调用 api 的 [例子](https://github.com/yjli80/poct/blob/master/poct-api/src/main/resources/static/index.html)
   
   ## 接口
