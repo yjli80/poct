@@ -30,7 +30,9 @@
 <script>
 $(function(){
 	
-	$("#meta").jwt();
+	var context = "http://211.66.87.97:8989";
+	
+	$("#meta").jwt({url:context + "/oauth/token"});
 	
 	$.ajaxPrefilter(function( options ) {
 		if ( !options.beforeSend) {
