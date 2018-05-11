@@ -1,5 +1,7 @@
 # poct api
-## JWT token 的使用
+## Token 的获取和使用
+
+项目自建了一个 oauth2 的服务，并使用 [JWT](https://jwt.io/) 作为token。
 
 1. 使用 clientId 和 clientSecret 取得 token：
 
