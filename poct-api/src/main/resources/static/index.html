@@ -23,79 +23,15 @@
 	<p id="results"></p>
 </div>
 <hr/>
-<div class="meta">
-	<h4>Token:</h4>
-	<p id="token"></p>
-	<h4>Token Decoded:</h4>
-	<p id="token-decoded"></p>
-	<p>
-	<b>expire in:</b><span id="expire"></span> Seconds.
-	</p>
+<div id="meta">
 </div>
 
 <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="jwt.js"></script>
 <script>
 $(function(){
 	
-	var context = "http://211.66.87.97:8989";
-	
-	function JWT(token) {
-		this.token = token;
-		this.parts = token.split('.');
-		this.header64 = atob(this.parts[0]);
-		this.payload64 = atob(this.parts[1]);
-		this.secret64 = this.parts[2];
-		this.header = $.parseJSON(this.header64);
-		this.payload = $.parseJSON(this.payload64);
-	}
-	JWT.prototype.secondsBeforeExpire = function() {
-		var now = Math.round(new Date().getTime()/1000);
-		return this.payload.exp - now;
-	};
-	JWT.prototype.isExpired = function() {
-		return this.secondsBeforeExpire() < 0;
-	};
-	
-	function showToken(jwt) {
-		$("#token").html(jwt.token);
-		$("#token-decoded").html(jwt.header64 + "<br/>" + jwt.payload64);
-		$("#expire").html("exp:" + jwt.payload.exp + " - now:" + Math.round(new Date().getTime()/1000) + " = " + jwt.secondsBeforeExpire());
-	};
-	
-	function auth() {
-		var username = 'admin', password = 'adscret', clientId = 'POCT-NFYY-2018', clientScret = 'QCxbvBlaZgVjsOfnTx';
-		$.ajax({
-			url : context + "/oauth/token",
-			method : 'POST',
-			data: {
-				username: username,
-				password: password,
-				grant_type: 'password'
-			},
-			beforeSend : function(xhr) {
-				xhr.setRequestHeader('Authorization', "Basic " + btoa(clientId + ":" + clientScret));
-			},
-			success: function(data, status, xhr){
-				localStorage.token = data.access_token;
-				showToken(new JWT(localStorage.token));
-			},
-			error: function(xhr, status, e) {
-				console.log(xhr);
-			}
-		});
-	}
-	
-	// 检查 token 是否存在和有效，否则重新获取token
-	if ( !localStorage.token ) {
-		auth();
-	} else {
-		var jwt = new JWT(localStorage.token);
-		if (jwt.isExpired()) {
-			auth();
-		} else {
-			showToken(new JWT(localStorage.token));
-		}
-	}
+	$("#meta").jwt();
 	
 	$.ajaxPrefilter(function( options ) {
 		if ( !options.beforeSend) {
