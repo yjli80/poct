@@ -1,5 +1,7 @@
 package nfyy.poct;
 
+import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,16 +28,23 @@ public class InitDataRunner implements CommandLineRunner {
 		
 		logger.info("init data...");
 		
-		if (users.count() == 0) {
-			
-			Role role = new Role("ROLE_USER", "user");
+		Role role = null;
+		if (roles.count() == 0) {
+			role = new Role("ROLE_USER", "user");
 			roles.save(role);
-			
+		} else {
+			role = roles.findOne("ROLE_USER");
+		}
+		
+		if (users.count() == 0) {
 			User user = new User();
 			user.addRole(role);
 			user.setUsername("admin");
 			user.setName("admin");
+			user.setBirthDate(new Date());
+			user.setEmail("admin@example.com");
 			user.setPassword(encoder.encode("adscret"));
+			user.setPasswordRaw(false);
 			users.save(user);
 		}
 	}

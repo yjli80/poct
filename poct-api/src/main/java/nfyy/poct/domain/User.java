@@ -13,6 +13,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -26,7 +28,10 @@ public class User {
 	@Column(unique=true, nullable=false)
 	private String username;
 	
+	@JsonIgnore
 	private String password;
+	@JsonIgnore
+	private boolean passwordRaw = true;
 
 	@ManyToMany
 	@JoinTable(name="USER_ROLES")
@@ -35,10 +40,17 @@ public class User {
 	@NotNull
 	private String name;
 	private String gender;
+	
+	@JsonFormat(shape=Shape.STRING, pattern="yyyy-MM-dd")
 	private Date birthDate;
 	
 	private String mobile;
 	private String email;
+	
+	public void setRawPassword(String rawPassword) {
+		this.passwordRaw = true;
+		this.password = rawPassword;
+	}
 	
 	public Integer getId() {
 		return id;
@@ -52,14 +64,17 @@ public class User {
 	public void setUsername(String username) {
 		this.username = username;
 	}
-	
-	@JsonIgnore
 	public String getPassword() {
 		return password;
 	}
-	
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	public boolean isPasswordRaw() {
+		return passwordRaw;
+	}
+	public void setPasswordRaw(boolean passwordRaw) {
+		this.passwordRaw = passwordRaw;
 	}
 	public String getName() {
 		return name;

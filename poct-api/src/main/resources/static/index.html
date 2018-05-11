@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<style type="text/css">
+.meta {color: #666}
+.data {color: #060}
+</style>
+</head>
+<body>
+<h3>API</h3>
+<a href="/api/profile">[get] /api/profile</a><br/>
+<a href="/api/profile/users">/api/profile/users</a><br/>
+<a href="/api/users/search/findByUsername?username=admin">[get] /api/users/search/findByUsername?username=admin</a><br/>
+<a href="/api/users/search?username=admin">[get] /api/users/search?username=admin</a><br/>
+<a href="/api/users">[get] /api/users</a><br/>
+<a href="/api/users/1">[get] /api/user/1</a><br/>
+<a href="/api/users/9999">[get] /api/user/9999 (not exists)</a><br/>
+<button id="saveUser">[post] /api/user</button><br/>
+<button id="deleteUser">[delete] /api/user/</button><br/>
+<hr/>
+<div class="data">
+	<h4>JSON Results:</h4>
+	<p id="results"></p>
+</div>
+<hr/>
+<div class="meta">
+	<h4>Token:</h4>
+	<p id="token"></p>
+	<h4>Token Decoded:</h4>
+	<p id="token-decoded"></p>
+	<p>
+	<b>expire in:</b><span id="expire"></span> Seconds.
+	</p>
+</div>
+
+<script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script>
+$(function(){
+	
+	var context = "http://211.66.87.97:8989";
+	
+	function JWT(token) {
+		this.token = token;
+		this.parts = token.split('.');
+		this.header64 = atob(this.parts[0]);
+		this.payload64 = atob(this.parts[1]);
+		this.secret64 = this.parts[2];
+		this.header = $.parseJSON(this.header64);
+		this.payload = $.parseJSON(this.payload64);
+	}
+	JWT.prototype.secondsBeforeExpire = function() {
+		var now = Math.round(new Date().getTime()/1000);
+		return this.payload.exp - now;
+	};
+	JWT.prototype.isExpired = function() {
+		return this.secondsBeforeExpire() < 0;
+	};
+	
+	function showToken(jwt) {
+		$("#token").html(jwt.token);
+		$("#token-decoded").html(jwt.header64 + "<br/>" + jwt.payload64);
+		$("#expire").html("exp:" + jwt.payload.exp + " - now:" + Math.round(new Date().getTime()/1000) + " = " + jwt.secondsBeforeExpire());
+	};
+	
+	function auth() {
+		var username = 'admin', password = 'adscret', clientId = 'POCT-NFYY-2018', clientScret = 'QCxbvBlaZgVjsOfnTx';
+		$.ajax({
+			url : context + "/oauth/token",
+			method : 'POST',
+			data: {
+				username: username,
+				password: password,
+				grant_type: 'password'
+			},
+			beforeSend : function(xhr) {
+				xhr.setRequestHeader('Authorization', "Basic " + btoa(clientId + ":" + clientScret));
+			},
+			success: function(data, status, xhr){
+				localStorage.token = data.access_token;
+				showToken(new JWT(localStorage.token));
+			},
+			error: function(xhr, status, e) {
+				console.log(xhr);
+			}
+		});
+	}
+	
+	// 检查 token 是否存在和有效，否则重新获取token
+	if ( !localStorage.token ) {
+		auth();
+	} else {
+		var jwt = new JWT(localStorage.token);
+		if (jwt.isExpired()) {
+			auth();
+		} else {
+			showToken(new JWT(localStorage.token));
+		}
+	}
+	
+	$.ajaxPrefilter(function( options ) {
+		if ( !options.beforeSend) {
+			options.beforeSend = function (xhr) {
+				xhr.setRequestHeader('Authorization', "Bearer " + localStorage.token);
+			}
+		}
+	});
+	
+	function find(url) {
+		$.ajax({
+			url : context + url,
+			method : 'GET',
+			success: function(data){
+				$("#results").html(JSON.stringify(data));
+			},
+			error: function(xhr, status, e) {
+				alert(xhr.status + ": " + xhr.responseText);
+				console.log(xhr);
+			}
+		});
+	}
+	
+	function saveUser() {
+		var user = {
+				username: "randomuser",
+				rawPassword: "randomsecret",
+				birthDate: "2000-01-12",
+				roles: ["/api/role/ROLE_USER"],
+				name: "Random User",
+				email: "randomuser@example.com"
+			};
+		var string = JSON.stringify(user);
+		$.ajax({
+			url: context + "/api/users",
+			method: "POST",
+			contentType: "application/json; charset=UTF-8",
+			dataType: "json",
+			data: string,
+			success: function(data) {
+				$("#results").html(JSON.stringify(data));
+			},
+			error: function(xhr, status, e) {
+				console.log(xhr);
+			}
+		});
+	}
+	
+	$("a").on("click", function(e){
+		e.preventDefault();
+		find($(this).attr("href"));
+	});
+	
+	$("#saveUser").on("click", function(e){
+		saveUser();
+	});
+});
+</script>
+</body>
+</html>
